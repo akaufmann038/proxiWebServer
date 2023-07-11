@@ -9,10 +9,10 @@ const port = 3000;
 const mutex = new Mutex();
 
 // connecting to redis client
-//const redisClient = redis.createClient({
-//  url: process.env.REDIS_URL,
-//});
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL,
+});
+//const redisClient = redis.createClient();
 redisClient.on("error", (err) => console.log("Redis Client Error", err));
 redisClient.connect();
 
