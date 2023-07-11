@@ -610,6 +610,7 @@ app.post("/get-feed", async (req, res) => {
 
 // creates a new event in the database
 app.post("/create-event", async (req, res) => {
+  console.log("create-event");
   // ensure that all fields are present and spelled correctly
   if (
     !("name" in req.body) ||
@@ -679,6 +680,7 @@ app.post("/create-event", async (req, res) => {
 
 // registers a new user in the database
 app.post("/register-full-user", async (req, res) => {
+  console.log("register-full-user");
   // ensure that all fields are present and spelled correctly
   if (
     !("phoneNumber" in req.body) ||
