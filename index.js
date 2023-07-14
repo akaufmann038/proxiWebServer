@@ -71,7 +71,7 @@ app.post("/set-all-skills", async (req, res) => {
     // add to allSkills set
     await redisClient.sAdd("allSkills", allSkills)
 
-    for (let i = 0; i < Object.keys(data); i++) {
+    for (let i = 0; i < Object.keys(data).length; i++) {
       // add to Filter:Skill set
       await redisClient.sAdd("Filter:Skill", Object.keys(data)[i])
 
