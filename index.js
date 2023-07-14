@@ -63,24 +63,21 @@ app.post("/set-all-skills", async (req, res) => {
 
   const allSkills = [] // turn recieved object into one list of skills
 
-  data.keys().forEach(element => {
+  Object.keys(data).forEach(element => {
     allSkills.push(...data[element])
   })
 
   try {
-    /*
     // add to allSkills set
     await redisClient.sAdd("allSkills", allSkills)
 
-    for (let i = 0; i < data.keys(); i++) {
+    for (let i = 0; i < Object.keys(data); i++) {
       // add to Filter:Skill set
-      await redisClient.sAdd("Filter:Skill", data.keys()[i])
+      await redisClient.sAdd("Filter:Skill", Object.keys(data)[i])
 
       // add to Attributes:{Filter} set
-      await redisClient.sAdd("Attributes:" + data.keys()[i], data[data.keys()[i]])
+      await redisClient.sAdd("Attributes:" + Object.keys(data)[i], data[Object.keys(data)[i]])
     }
-    */
-    console.log(data)
 
     return res.json({
       success: true,
