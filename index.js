@@ -55,6 +55,42 @@ const redisKeys = {
   connectionRequests: (userId) => "user:" + userId + ":requests",
 };
 
+// method for setting all skills and filters for those skills
+// in the database, the data must be sent in the following format:
+// { Filter: [filter1, filter2...],... }
+app.post("/set-all-skills", async (req, res) => {
+  const allSkills = [] // turn recieved object into one list of skills
+
+  req.body.keys().forEach(element => {
+    allSkills.push(...req.body[element])
+  })
+
+  try {
+    // add to allSkills set
+    await redisClient.sAdd("allSkills", allSkills)
+
+    for (let i = 0; i < req.body.keys(); i++) {
+      // add to Filter:Skill set
+      await redisClient.sAdd("Filter:Skill", req.body.keys()[i])
+
+      // add to Attributes:{Filter} set
+      await redisClient.sAdd("Attributes:" + req.body.keys()[i], req.body[req.body.keys()[i]])
+    }
+
+    return res.json({
+      success: true,
+      message: "Successfully added skills and filters into database"
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.json({
+      success: false,
+      message: "There was an error while setting the skills in the database"
+    })
+  }
+})
+
 app.post("/send-redis-command", async (req, res) => {
   const command = req.body["command"]
   const splitCommand = command.split(" ")
