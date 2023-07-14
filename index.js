@@ -59,23 +59,28 @@ const redisKeys = {
 // in the database, the data must be sent in the following format:
 // { Filter: [filter1, filter2...],... }
 app.post("/set-all-skills", async (req, res) => {
+  const data = req.body["data"]
+
   const allSkills = [] // turn recieved object into one list of skills
 
-  req.body.keys().forEach(element => {
-    allSkills.push(...req.body[element])
+  data.keys().forEach(element => {
+    allSkills.push(...data[element])
   })
 
   try {
+    /*
     // add to allSkills set
     await redisClient.sAdd("allSkills", allSkills)
 
-    for (let i = 0; i < req.body.keys(); i++) {
+    for (let i = 0; i < data.keys(); i++) {
       // add to Filter:Skill set
-      await redisClient.sAdd("Filter:Skill", req.body.keys()[i])
+      await redisClient.sAdd("Filter:Skill", data.keys()[i])
 
       // add to Attributes:{Filter} set
-      await redisClient.sAdd("Attributes:" + req.body.keys()[i], req.body[req.body.keys()[i]])
+      await redisClient.sAdd("Attributes:" + data.keys()[i], data[data.keys()[i]])
     }
+    */
+    console.log(data)
 
     return res.json({
       success: true,
