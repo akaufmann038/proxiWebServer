@@ -55,6 +55,17 @@ const redisKeys = {
   connectionRequests: (userId) => "user:" + userId + ":requests",
 };
 
+app.post("/send-redis-command", async (req, res) => {
+  const command = req.body["command"]
+  const splitCommand = command.split(" ")
+
+  const result = await redisClient.sendCommand(splitCommand)
+
+  return res.json({
+    data: result
+  })
+})
+
 // given object of hash keys and key-properties, returns all of the properties
 // { hashKey,id or phoneNumber: [property1, property2...], hashKey2,id: [...] }
 // returns values in same object format with values in same order as queried:
