@@ -55,54 +55,59 @@ const redisKeys = {
   connectionRequests: (userId) => "user:" + userId + ":requests",
 };
 
+app.post("/get-filters", async (req, res) => {});
+
 // method for setting all skills and filters for those skills
 // in the database, the data must be sent in the following format:
 // { Filter: [filter1, filter2...],... }
 app.post("/set-all-skills", async (req, res) => {
-  const data = req.body["data"]
+  const data = req.body["data"];
 
-  const allSkills = [] // turn recieved object into one list of skills
+  const allSkills = []; // turn recieved object into one list of skills
 
-  Object.keys(data).forEach(element => {
-    allSkills.push(...data[element])
-  })
+  Object.keys(data).forEach((element) => {
+    allSkills.push(...data[element]);
+  });
 
   try {
     // add to allSkills set
-    await redisClient.sAdd("allSkills", allSkills)
+    await redisClient.sAdd("allSkills", allSkills);
 
     for (let i = 0; i < Object.keys(data).length; i++) {
       // add to Filter:Skill set
-      await redisClient.sAdd("Filter:Skill", Object.keys(data)[i])
+      await redisClient.sAdd("Filter:Skill", Object.keys(data)[i]);
 
       // add to Attributes:{Filter} set
-      await redisClient.sAdd("Attributes:" + Object.keys(data)[i], data[Object.keys(data)[i]])
+      await redisClient.sAdd(
+        "Attributes:" + Object.keys(data)[i],
+        data[Object.keys(data)[i]]
+      );
     }
 
     return res.json({
       success: true,
-      message: "Successfully added skills and filters into database"
-    })
+      message: "Successfully added skills and filters into database",
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
 
     return res.json({
       success: false,
-      message: "There was an error while setting the skills in the database"
-    })
+      message: "There was an error while setting the skills in the database",
+    });
   }
-})
+});
 
 app.post("/send-redis-command", async (req, res) => {
-  const command = req.body["command"]
-  const splitCommand = command.split(" ")
+  const command = req.body["command"];
+  const splitCommand = command.split(" ");
 
-  const result = await redisClient.sendCommand(splitCommand)
+  const result = await redisClient.sendCommand(splitCommand);
 
   return res.json({
-    data: result
-  })
-})
+    data: result,
+  });
+});
 
 // given object of hash keys and key-properties, returns all of the properties
 // { hashKey,id or phoneNumber: [property1, property2...], hashKey2,id: [...] }
@@ -743,7 +748,8 @@ app.post("/register-full-user", async (req, res) => {
     !("photo" in req.body) ||
     !("biography" in req.body) ||
     !("skills" in req.body) ||
-    !("interests" in req.body)
+    !("interests" in req.body) ||
+    !("filters" in req.body)
   ) {
     return res.json({
       success: false,
@@ -798,6 +804,7 @@ app.post("/register-full-user", async (req, res) => {
         biography: req.body["biography"],
         skills: req.body["skills"],
         interests: req.body["interests"],
+        filters: req.body["filters"],
       })
       .set(req.body["phoneNumber"], newId)
       .exec();
