@@ -55,7 +55,26 @@ const redisKeys = {
   connectionRequests: (userId) => "user:" + userId + ":requests",
 };
 
-app.post("/get-filters", async (req, res) => {});
+app.get("/get-all-filters", async (req, res) => {
+  try {
+    const result = {};
+
+    result["Skill"] = await redisClient.sMembers("Filter:Skill");
+
+    return res.json({
+      success: true,
+      message: "Successfully retrieved filters from database",
+      result: result,
+    });
+  } catch (err) {
+    console.log(err);
+
+    return res.json({
+      success: false,
+      message: "There was an error while getting all the filters",
+    });
+  }
+});
 
 // method for setting all skills and filters for those skills
 // in the database, the data must be sent in the following format:
